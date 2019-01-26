@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Driver Files">
+      <UniqueIdentifier>{8E41214B-6785-4CFE-B992-037D68949A14}</UniqueIdentifier>
+      <Extensions>inf;inv;inx;mof;mc;</Extensions>
+    </Filter>
+    <Filter Include="Two Machine Debugging">
+      <UniqueIdentifier>{c6967e23-6526-4a2f-818b-27c2163799f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NtHread">
+      <UniqueIdentifier>{8cb3c283-12e9-430d-9bfa-995253a93388}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FastFunction">
+      <UniqueIdentifier>{83a0958f-cfd3-42d5-8676-f316700798ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SSDT">
+      <UniqueIdentifier>{e7a48ba8-2b03-41a2-9b05-ff0ab6930acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HOOK">
+      <UniqueIdentifier>{d36a54f6-1643-4020-ae1b-52dbe7123b6e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Inf Include="TxW7Debug.inf">
+      <Filter>Driver Files</Filter>
+    </Inf>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Driver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NtHread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="W7TwoMachineDebugging.cpp">
+      <Filter>Two Machine Debugging</Filter>
+    </ClCompile>
+    <ClCompile Include="FastFunction.cpp">
+      <Filter>FastFunction</Filter>
+    </ClCompile>
+    <ClCompile Include="SSDT.cpp">
+      <Filter>SSDT</Filter>
+    </ClCompile>
+    <ClCompile Include="HOOK.cpp">
+      <Filter>HOOK</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Driver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NtHread.h">
+      <Filter>NtHread</Filter>
+    </ClInclude>
+    <ClInclude Include="NtApi.h">
+      <Filter>NtHread</Filter>
+    </ClInclude>
+    <ClInclude Include="NtStruct.h">
+      <Filter>NtHread</Filter>
+    </ClInclude>
+    <ClInclude Include="W7TwoMachineDebugging.h">
+      <Filter>Two Machine Debugging</Filter>
+    </ClInclude>
+    <ClInclude Include="FastFunction.h">
+      <Filter>FastFunction</Filter>
+    </ClInclude>
+    <ClInclude Include="SSDT.h">
+      <Filter>SSDT</Filter>
+    </ClInclude>
+    <ClInclude Include="HOOK.h">
+      <Filter>HOOK</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

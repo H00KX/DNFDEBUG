@@ -1,0 +1,86 @@
+;
+; TxW7Debug.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=TxW7Debug.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+
+[DestinationDirs]
+DefaultDestDir = 12
+TxW7Debug_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+TxW7Debug.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%TxW7Debug.DeviceDesc%=TxW7Debug_Device, Root\TxW7Debug ; TODO: edit hw-id
+
+[TxW7Debug_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+TxW7Debug.sys
+
+;-------------- Service installation
+[TxW7Debug_Device.NT.Services]
+AddService = TxW7Debug,%SPSVCINST_ASSOCSERVICE%, TxW7Debug_Service_Inst
+
+; -------------- TxW7Debug driver install sections
+[TxW7Debug_Service_Inst]
+DisplayName    = %TxW7Debug.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\TxW7Debug.sys
+
+;
+;--- TxW7Debug_Device Coinstaller installation ------
+;
+
+[TxW7Debug_Device.NT.CoInstallers]
+AddReg=TxW7Debug_Device_CoInstaller_AddReg
+CopyFiles=TxW7Debug_Device_CoInstaller_CopyFiles
+
+[TxW7Debug_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[TxW7Debug_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[TxW7Debug_Device.NT.Wdf]
+KmdfService =  TxW7Debug, TxW7Debug_wdfsect
+[TxW7Debug_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "TxW7Debug Installation Disk"
+TxW7Debug.DeviceDesc = "TxW7Debug Device"
+TxW7Debug.SVCDESC = "TxW7Debug Service"
