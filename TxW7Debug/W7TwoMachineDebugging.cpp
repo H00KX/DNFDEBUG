@@ -17,7 +17,6 @@ static ULONG64  g_KeUpdateSystemTime_KdDebuggerEnabled_OffeSet1 = 0x7A45D;
 */
 static ULONG64  g_KeUpdateSystemTime_KdDebuggerEnabled_OffeSet2 = 0x7A5FB;
 
-
 /*
     KeUpdateRunTime 第一处引用 KdDebuggerEnabled 的地方
 */
@@ -33,6 +32,29 @@ static ULONG64  g_KdCheckForDebugBreak_KdDebuggerEnabled_OffeSet1 = 0x116EDD;
 	KdPollBreakIn 第一处引用 KdDebuggerEnabled 的地方
 */
 static ULONG64  g_KdPollBreakIn_KdDebuggerEnabled_OffeSet1 = 0x7EECC;
+//-------------------------------------------------------------------------------以上是KdDebuggerEnabled的偏移
+
+/*
+     KeUpdateSystemTime 第一处引用 KdPitchDebugger 的地方
+*/
+static ULONG64 g_KeUpdateSystemTime_KdPitchDebugger_Offset = 0x7A676;
+
+/*
+     KeUpdateRunTime 第一处引用 KdPitchDebugger 的地方
+*/
+static ULONG64 g_KeUpdateRunTime_KdPitchDebugger_Offset = 0x7EE91;
+
+/*
+	 KdCheckForDebugBreak_ 第一处引用 KdPitchDebugger 的地方
+*/
+static ULONG64 g_KdCheckForDebugBreak_KdPitchDebugger_Offset = 0x116ED4;
+
+/*
+     KdPollBreakIn  第一处引用 KdPitchDebugger 的地方
+*/
+static ULONG64 g_KdPollBreakIn_KdPitchDebugger_Offset = 0x7EEB7;
+//-------------------------------------------------------------------------------以上是KdPitchDebugger的偏移
+
 
 
 VOID W7TwoMachineDebugging::Init_W7TwoMachineDebuggingClass()
@@ -110,25 +132,57 @@ NTSTATUS W7TwoMachineDebugging::HookKdDebuggerEnabled()
 {
 	NTSTATUS Status = STATUS_SUCCESS;	
 	KIRQL Irql = WPOFFx64();
-	__try
-	{
+	
 	
 		ULONG64 KeUpdateSystemTime_1 = m_NtBaseAddr + g_KeUpdateSystemTime_KdDebuggerEnabled_OffeSet1;
+		if (!MmIsAddressValid((PVOID)KeUpdateSystemTime_1)) {
+			Status = MY_GET_KEUPDATESYSTEMTIME_1_KDDEBUGGERENABLED_ERROR;
+			goto $EXIT;
+		}
+
 		ULONG64 KeUpdateSystemTime_2 = m_NtBaseAddr + g_KeUpdateSystemTime_KdDebuggerEnabled_OffeSet2;
+		if (!MmIsAddressValid((PVOID)KeUpdateSystemTime_2)) {
+			Status = MY_GET_KEUPDATESYSTEMTIME_2_KDDEBUGGERENABLED_ERROR;
+			goto $EXIT;
+		}
+
+
 		ULONG64 KeUpdateRunTime_ = m_NtBaseAddr + g_KeUpdateRunTime_KdDebuggerEnabled_OffeSet1;
+
+		if (!MmIsAddressValid((PVOID)KeUpdateRunTime_)) {
+			Status = MY_GET_KEUPDATERUNTIME_KDDEBUGGERENABLED_ERROR;
+			goto $EXIT;
+		}
+
 		ULONG64 KdCheckForDebugBreak_ = m_NtBaseAddr + g_KdCheckForDebugBreak_KdDebuggerEnabled_OffeSet1;
+
+		if (!MmIsAddressValid((PVOID)KdCheckForDebugBreak_)) {
+			Status = MY_GET_KDCHECKFORDEBUGBREAK_KDDEBUGGERENABLED_ERROR;
+			goto $EXIT;
+		}
+
 		ULONG64 KdPollBreakIn_ = m_NtBaseAddr + g_KdPollBreakIn_KdDebuggerEnabled_OffeSet1;
-		*(PULONG)(KeUpdateSystemTime_1 + 2) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KeUpdateSystemTime_1 - 6);
-		*(PULONG)(KeUpdateSystemTime_2 + 2) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KeUpdateSystemTime_2 - 7);
-		*(PULONG)(KeUpdateRunTime_ + 2) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KeUpdateRunTime_ - 7);
-		*(PULONG)(KdCheckForDebugBreak_ + 2) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KdCheckForDebugBreak_ - 7);
-		*(PULONG)(KdPollBreakIn_ + 3) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KdPollBreakIn_ - 7);
-		*(PULONG64)m_KdDebuggerEnabled_BL = 0x100;
-	}
-	__except (1) {
-		Status = MY_GET_MOV_ERROR;
-		
-	}
+
+		if (!MmIsAddressValid((PVOID)KdPollBreakIn_)) {
+			Status = MY_GET_KDPOLLBREAKIN_KDDEBUGGERENABLED_ERROR;
+			goto $EXIT;
+		}
+
+		__try
+		{
+			*(PULONG)(KeUpdateSystemTime_1 + 2) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KeUpdateSystemTime_1 - 6);
+			*(PULONG)(KeUpdateSystemTime_2 + 2) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KeUpdateSystemTime_2 - 7);
+			*(PULONG)(KeUpdateRunTime_ + 2) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KeUpdateRunTime_ - 7);
+			*(PULONG)(KdCheckForDebugBreak_ + 2) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KdCheckForDebugBreak_ - 7);
+			*(PULONG)(KdPollBreakIn_ + 3) = (ULONG)((ULONG64)m_KdDebuggerEnabled_Me - KdPollBreakIn_ - 7);
+			*(PULONG64)m_KdDebuggerEnabled_BL = 0x1;
+		}
+		__except (1) {
+			Status = MY_GET_MOV_ERROR;
+
+		}
+
+$EXIT:
 	WPONx64(Irql);
 	return Status;
 }
@@ -138,7 +192,21 @@ NTSTATUS W7TwoMachineDebugging::HookKdPitchDebugger()
 	NTSTATUS Status = STATUS_SUCCESS;
 
 	KIRQL Irql = WPOFFx64();
-
+	__try
+	{
+		ULONG64 KeUpdateSystemTime_ = m_NtBaseAddr + g_KeUpdateSystemTime_KdPitchDebugger_Offset;
+		ULONG64 KeUpdateRunTime_ = m_NtBaseAddr + g_KeUpdateRunTime_KdPitchDebugger_Offset;
+		ULONG64 KdCheckForDebugBreak_ = m_NtBaseAddr + g_KdCheckForDebugBreak_KdPitchDebugger_Offset;
+		ULONG64 KdPollBreakIn_ = m_NtBaseAddr + g_KdPollBreakIn_KdPitchDebugger_Offset;
+		*(PULONG)(KeUpdateSystemTime_ + 2) = (ULONG)((ULONG64)m_KdPitchDebugger_Me - KeUpdateSystemTime_ - 7);
+		*(PULONG)(KeUpdateRunTime_ + 2) = (ULONG)((ULONG64)m_KdPitchDebugger_Me - KeUpdateRunTime_ - 7);
+		*(PULONG)(KdCheckForDebugBreak_ + 2) = (ULONG)((ULONG64)m_KdPitchDebugger_Me - KdCheckForDebugBreak_ - 7);
+		*(PULONG)(KdPollBreakIn_ + 2) = (ULONG)((ULONG64)m_KdPitchDebugger_Me - KdPollBreakIn_ - 7);
+		*(PUCHAR)m_KdPitchDebugger_BL = 1;
+	}
+	__except (1) {
+		Status = MY_GET_MOV_ERROR;
+	}
 	WPONx64(Irql);
 
 	return Status;
